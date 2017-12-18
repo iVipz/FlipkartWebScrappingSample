@@ -1,7 +1,7 @@
 """ Sample Script to Scrap Flipkart.com"""
 from urllib.request import urlopen as uReq
 from bs4 import BeautifulSoup as soup
-
+import sys
 
 my_url = "https://www.flipkart.com/search?q=iphone"
 
@@ -31,7 +31,7 @@ try :
     f=open(filename,"w")
 except IOError as err:
     print("Error reading the file " + filename)
-    SystemExit()
+    sys.exit(1)
 
 headers="Product_Name,Pricing,Ratings\n"
 f.write(headers)
