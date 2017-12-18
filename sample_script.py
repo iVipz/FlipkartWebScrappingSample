@@ -17,17 +17,21 @@ containers = page_soup.findAll("div", {"class":"col _2-gKeQ"})
 #print(soup.prettify(containers[0]))
 
 container =containers[0]
-print(container.div.img["alt"])
+#print(container.div.img["alt"])
 
 price = container.findAll("div", {"class":"_1vC4OE _2rQ-NK"})
 #price = container.findAll("div", {"class":"col col-5-12 _2o7WAb"})
-print(price[0].text)
+#print(price[0].text)
 
 rating = container.findAll("div", {"class":"hGSR34 _2beYZw"})
-print(rating[0].text)
+#print(rating[0].text)
 
 filename="products.csv"
-f=open(filename,"w")
+try :
+    f=open(filename,"w")
+except IOError as err:
+    print("Error reading the file " + filename)
+    SystemExit()
 
 headers="Product_Name,Pricing,Ratings\n"
 f.write(headers)
@@ -35,8 +39,8 @@ f.write(headers)
 for container in containers:
     product_name = container.div.img["alt"]
 
-    #price_container = container.findAll("div", {"class":"col col-5-12 _2o7WAb"})
-    price_container = container.findAll("div", {"class":"_1vC4OE _2rQ-NK"})
+    price_container = container.findAll("div", {"class":"col col-5-12 _2o7WAb"})
+    #price_container = container.findAll("div", {"class":"_1vC4OE _2rQ-NK"})
     price = price_container[0].text.strip()
 
     rating_container = container.findAll("div", {"class":"hGSR34 _2beYZw"})
@@ -46,5 +50,19 @@ for container in containers:
     #print("price :" + price)
     #print("rating :" + rating)
 
+    #string parsing
+    trim_price = ''.join(price.split(','))
+    rm_rupee = trim_price.split("₹")
+    add_rs_price = "Rs. " + rm_rupee[1]
+    split_price = add_rs_price.split('E')
+    rem_upto = split_price[0].split("Up")
+    final_price = rem_upto[0]
 
+    split_rating = rating.split(" ")
+    final_rating = split_rating[0]
+
+    lineItem = product_name.replace(",", "|") + "," + final_price + "," + final_rating + "\n"
+    print(lineItem)
+    f.write(lineItem)
+f.close()
 print("Reached the end")
